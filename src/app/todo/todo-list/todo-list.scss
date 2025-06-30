@@ -1,0 +1,133 @@
+.todo-main {
+  max-width: 520px;
+  margin: 4vh auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+.logout-btn {
+  background: #eee;
+  color: #1976d2;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.logout-btn:hover {
+  background: #dbeafe;
+}
+.add-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.add-btn:hover {
+  background: #1565c0;
+}
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  justify-content: space-between;
+}
+.priority-dot {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+.priority-高 {
+  background: #d32f2f;
+}
+.priority-中 {
+  background: #fbc02d;
+}
+.priority-低 {
+  background: #388e3c;
+}
+.content {
+  flex: 1;
+  font-weight: 500;
+}
+.category {
+  color: #888;
+  font-size: 0.95em;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1976d2;
+  font-size: 1.2em;
+  padding: 0.2em;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #e3e8f0;
+}
+.empty-tip {
+  text-align: center;
+  color: #aaa;
+  font-size: 1.05em;
+  margin-top: 1.5rem;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin: 0.3em 0;
+  align-items: center;
+}
+.tag {
+  margin-left: 0;
+}
+.actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.3em;
+  align-items: center;
+}
+.todo-tag {
+  display: inline-block;
+  background: #90caf9;
+  color: #fff;
+  border-radius: 16px;
+  font-size: 0.85em;
+  padding: 0.1em 0.7em;
+  margin: 0 0.3em 0.3em 0;
+  line-height: 1.6;
+  vertical-align: middle;
+  word-break: break-all;
+}

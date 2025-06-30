@@ -1,0 +1,55 @@
+<form (ngSubmit)="save()" class="todo-form">
+  <label> 標題：<input [(ngModel)]="title" name="title" required /> </label>
+  <label>
+    內容：<textarea
+      [(ngModel)]="content"
+      name="content"
+      rows="5"
+      required
+    ></textarea>
+  </label>
+  <label>
+    標籤（單選）：
+    <div class="tag-select-group">
+      <span
+        *ngFor="let tag of tags"
+        class="tag tag-select"
+        [ngStyle]="{
+          background: tag.color || '#e0e7ff',
+          color: '#fff',
+          opacity: tagId === tag.id ? 1 : 0.5
+        }"
+      >
+        <input
+          type="radio"
+          [value]="tag.id"
+          [(ngModel)]="tagId"
+          name="tagId"
+          class="tag-radio"
+        />
+        {{ tag.name }}
+        <button type="button" class="tag-delete" (click)="deleteTag(tag.id)">
+          ×
+        </button>
+      </span>
+    </div>
+    <div class="tag-create-group">
+      <input
+        [(ngModel)]="newTagName"
+        name="newTagName"
+        placeholder="新增標籤"
+      />
+      <input type="color" [(ngModel)]="newTagColor" name="newTagColor" />
+      <button type="button" (click)="addTag()">新增</button>
+    </div>
+  </label>
+  <label>
+    優先度：
+    <select [(ngModel)]="priority" name="priority">
+      <option value="高">高</option>
+      <option value="中">中</option>
+      <option value="低">低</option>
+    </select>
+  </label>
+  <button type="submit">儲存</button>
+</form>

@@ -1,0 +1,57 @@
+<div class="todo-main">
+  <div class="header">
+    <h2>我的待辦清單</h2>
+    <button class="logout-btn" (click)="logout()">
+      <span class="material-icons">logout</span> 登出
+    </button>
+  </div>
+  <button
+    class="add-btn"
+    (click)="
+      editTodo({
+        title: '',
+        content: '',
+        tagIds: [],
+        priority: '中',
+        isDone: false,
+        userId: userId
+      })
+    "
+  >
+    <span class="material-icons">add</span> 新增記事
+  </button>
+  <ul class="todo-list">
+    <li *ngFor="let todo of todos">
+      <span [ngClass]="'priority-dot priority-' + todo.priority"></span>
+      <span class="title">{{ todo.title }}</span>
+      <div class="actions">
+        <span class="tag-list">
+          <span
+            *ngFor="let tag of getTags(todo.tagIds)"
+            class="todo-tag"
+            [ngStyle]="{ background: tag.color, color: '#fff' }"
+          >
+            {{ tag.name }}
+          </span>
+        </span>
+        <button (click)="markDone(todo)" title="完成">
+          <span class="material-icons">check_circle</span>
+        </button>
+        <button (click)="editTodo(todo)" title="編輯">
+          <span class="material-icons">edit</span>
+        </button>
+        <button (click)="deleteTodo(todo)" title="刪除">
+          <span class="material-icons">delete</span>
+        </button>
+      </div>
+    </li>
+    <li *ngIf="todos.length === 0" class="empty-tip">
+      目前沒有待辦事項，快來新增吧！
+    </li>
+  </ul>
+  <app-todo-form
+    *ngIf="editingTodo"
+    [todo]="editingTodo"
+    (saved)="onEditSaved()"
+  ></app-todo-form>
+</div>
