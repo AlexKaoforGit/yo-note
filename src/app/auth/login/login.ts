@@ -21,7 +21,7 @@ export class Login {
   login() {
     this.error = '';
     this.authService.login(this.email, this.password).subscribe({
-      next: () => this.router.navigate(['/todos']),
+      next: () => this.router.navigate(['todos']),
       error: (err) => (this.error = '登入失敗，請檢查帳號密碼'),
     });
   }
