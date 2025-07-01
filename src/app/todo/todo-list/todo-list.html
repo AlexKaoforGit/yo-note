@@ -21,19 +21,19 @@
     <span class="material-icons">add</span> 新增記事
   </button>
   <ul class="todo-list">
-    <li *ngFor="let todo of todos">
+    <li *ngFor="let todo of todos" class="todo-item">
       <span [ngClass]="'priority-dot priority-' + todo.priority"></span>
       <span class="title">{{ todo.title }}</span>
-      <div class="actions">
-        <span class="tag-list">
-          <span
-            *ngFor="let tag of getTags(todo.tagIds)"
-            class="todo-tag"
-            [ngStyle]="{ background: tag.color, color: '#fff' }"
-          >
-            {{ tag.name }}
-          </span>
+      <span class="tag-list">
+        <span
+          *ngFor="let tag of getTags(todo.tagIds)"
+          class="todo-tag"
+          [ngStyle]="{ background: tag.color, color: '#fff' }"
+        >
+          {{ tag.name }}
         </span>
+      </span>
+      <div class="actions">
         <button (click)="markDone(todo)" title="完成">
           <span class="material-icons">check_circle</span>
         </button>
@@ -42,6 +42,9 @@
         </button>
         <button (click)="deleteTodo(todo)" title="刪除">
           <span class="material-icons">delete</span>
+        </button>
+        <button mat-icon-button (click)="toggleDetail(todo)">
+          <mat-icon>visibility</mat-icon>
         </button>
       </div>
     </li>
@@ -54,4 +57,16 @@
     [todo]="editingTodo"
     (saved)="onEditSaved()"
   ></app-todo-form>
+  <ng-container *ngIf="openedTodoId">
+    <div class="todo-detail-modal-full">
+      <div class="todo-detail-content-full">
+        <div class="detail-content-title">內容</div>
+        <div class="detail-content-body">{{ openedTodo?.content }}</div>
+        <button class="close-detail-full" (click)="openedTodoId = null">
+          關閉
+        </button>
+      </div>
+      <div class="modal-backdrop-full" (click)="openedTodoId = null"></div>
+    </div>
+  </ng-container>
 </div>

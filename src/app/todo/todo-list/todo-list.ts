@@ -7,19 +7,21 @@ import { Auth } from '@angular/fire/auth';
 import { TodoForm } from '../todo-form/todo-form';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.html',
   styleUrl: './todo-list.scss',
   providers: [TodoService],
-  imports: [CommonModule, FormsModule, TodoForm],
+  imports: [CommonModule, FormsModule, TodoForm, MatIconModule],
 })
 export class TodoList implements OnInit {
   todos: Todo[] = [];
   tags: Tag[] = [];
   userId: string = '';
   editingTodo: Todo | null = null;
+  openedTodoId: string | null = null;
 
   constructor(
     private todoService: TodoService,
@@ -86,5 +88,14 @@ export class TodoList implements OnInit {
   getTags(tagIds: string[]) {
     if (!this.tags) return [];
     return this.tags.filter((tag) => tag.id && tagIds.includes(tag.id!));
+  }
+
+  toggleDetail(todo: Todo) {
+    const id = todo.id ?? null;
+    this.openedTodoId = this.openedTodoId === id ? null : id;
+  }
+
+  get openedTodo(): Todo | undefined {
+    return this.todos.find((t) => t.id === this.openedTodoId);
   }
 }
