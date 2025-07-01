@@ -106,9 +106,10 @@ button:hover {
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4em;
-  margin: 0.3em 0;
-  align-items: center;
+  gap: 0.3em;
+  margin: 0.2em 0 0.2em 0;
+  justify-content: flex-start;
+  width: 100%;
 }
 .tag {
   margin-left: 0;
@@ -235,4 +236,52 @@ button:hover {
   right: 0;
   bottom: 0;
   z-index: 1999;
+}
+.todo-item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 1.2em;
+}
+.actions-bottom-right {
+  position: static;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 0.5em;
+  margin-top: 0.7em;
+}
+.todo-main-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+  width: 100%;
+}
+.title {
+  font-size: 1.08em;
+  font-weight: 500;
+  margin-right: 0.7em;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+}
+.todo-tag-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  width: 100%;
+}
+.tag-list {
+  flex: 1 1 auto;
+}
+.actions-bottom-right {
+  flex: 0 0 auto;
 }

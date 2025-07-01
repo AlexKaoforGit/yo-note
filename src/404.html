@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=/yo-note/" />
+    <script>
+      // 支援子路徑自動導向
+      var l = window.location;
+      var path = l.pathname.replace(/^\/yo-note/, "");
+      window.location.replace("/yo-note/" + "#" + path + l.search + l.hash);
+    </script>
+  </head>
+  <body>
+    <h1>Redirecting...</h1>
+  </body>
+</html>

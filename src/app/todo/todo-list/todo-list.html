@@ -1,6 +1,6 @@
 <div class="todo-main">
   <div class="header">
-    <h2>我的待辦清單</h2>
+    <h2>Yo 的待辦清單</h2>
     <button class="logout-btn" (click)="logout()">
       <span class="material-icons">logout</span> 登出
     </button>
@@ -22,30 +22,34 @@
   </button>
   <ul class="todo-list">
     <li *ngFor="let todo of todos" class="todo-item">
-      <span [ngClass]="'priority-dot priority-' + todo.priority"></span>
-      <span class="title">{{ todo.title }}</span>
-      <span class="tag-list">
-        <span
-          *ngFor="let tag of getTags(todo.tagIds)"
-          class="todo-tag"
-          [ngStyle]="{ background: tag.color, color: '#fff' }"
-        >
-          {{ tag.name }}
-        </span>
-      </span>
-      <div class="actions">
-        <button (click)="markDone(todo)" title="完成">
-          <span class="material-icons">check_circle</span>
-        </button>
-        <button (click)="editTodo(todo)" title="編輯">
-          <span class="material-icons">edit</span>
-        </button>
-        <button (click)="deleteTodo(todo)" title="刪除">
-          <span class="material-icons">delete</span>
-        </button>
-        <button mat-icon-button (click)="toggleDetail(todo)">
-          <mat-icon>visibility</mat-icon>
-        </button>
+      <div class="todo-main-row">
+        <span [ngClass]="'priority-dot priority-' + todo.priority"></span>
+        <span class="title">{{ todo.title }}</span>
+      </div>
+      <div class="todo-tag-action-row">
+        <div class="tag-list">
+          <span
+            *ngFor="let tag of getTags(todo.tagIds)"
+            class="todo-tag"
+            [ngStyle]="{ background: tag.color, color: '#fff' }"
+          >
+            {{ tag.name }}
+          </span>
+        </div>
+        <div class="actions actions-bottom-right">
+          <button (click)="markDone(todo)" title="完成">
+            <span class="material-icons">check_circle</span>
+          </button>
+          <button (click)="editTodo(todo)" title="編輯">
+            <span class="material-icons">edit</span>
+          </button>
+          <button (click)="deleteTodo(todo)" title="刪除">
+            <span class="material-icons">delete</span>
+          </button>
+          <button mat-icon-button (click)="toggleDetail(todo)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </div>
       </div>
     </li>
     <li *ngIf="todos.length === 0" class="empty-tip">
