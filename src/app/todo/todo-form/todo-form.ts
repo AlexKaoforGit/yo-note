@@ -94,6 +94,7 @@ export class TodoForm implements OnInit {
   }
 
   save() {
+    if (!window.confirm('確定要儲存這次編輯嗎？')) return;
     this.auth.onAuthStateChanged((user) => {
       if (!user) return;
       if (this.todo && this.todo.id) {

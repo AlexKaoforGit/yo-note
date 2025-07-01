@@ -64,10 +64,12 @@ export class TodoList implements OnInit {
   }
 
   markDone(todo: Todo) {
+    if (!window.confirm('確定要將此記事標記為完成嗎？')) return;
     this.todoService.updateTodo(todo.id!, { isDone: true }).then();
   }
 
   deleteTodo(todo: Todo) {
+    if (!window.confirm('確定要刪除這個記事嗎？')) return;
     this.todoService.deleteTodo(todo.id!).then();
   }
 
