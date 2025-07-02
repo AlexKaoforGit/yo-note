@@ -62,15 +62,17 @@
     (saved)="onEditSaved()"
   ></app-todo-form>
   <ng-container *ngIf="openedTodoId">
-    <div class="todo-detail-modal-full">
-      <div class="todo-detail-content-full">
+    <div class="todo-detail-modal">
+      <div class="modal-backdrop" (click)="openedTodoId = null"></div>
+      <div class="todo-detail-content">
         <div class="detail-content-title">內容</div>
-        <div class="detail-content-body">{{ openedTodo?.content }}</div>
-        <button class="close-detail-full" (click)="openedTodoId = null">
-          關閉
-        </button>
+        <div class="detail-content-body">{{ openedTodo?.content || "無" }}</div>
+        <div class="close-button-container">
+          <button class="close-detail" (click)="openedTodoId = null">
+            關閉
+          </button>
+        </div>
       </div>
-      <div class="modal-backdrop-full" (click)="openedTodoId = null"></div>
     </div>
   </ng-container>
 </div>
