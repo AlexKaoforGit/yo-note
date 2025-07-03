@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -21,12 +21,18 @@ export interface Tag {
 
 @Injectable({ providedIn: 'root' })
 export class TagService {
-  constructor(private firestore: Firestore, private auth: Auth) {}
+  constructor(
+    private firestore: Firestore,
+    private auth: Auth,
+    private ngZone: NgZone
+  ) {}
 
   getTags(userId: string): Observable<Tag[]> {
     const tagsRef = collection(this.firestore, 'tags');
     const q = query(tagsRef, where('userId', '==', userId));
-    return collectionData(q, { idField: 'id' }) as Observable<Tag[]>;
+    return this.ngZone.runOutsideAngular(() => {
+      return collectionData(q, { idField: 'id' }) as Observable<Tag[]>;
+    });
   }
 
   addTag(tag: Tag) {

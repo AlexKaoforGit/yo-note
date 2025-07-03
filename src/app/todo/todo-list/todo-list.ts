@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TodoService, Todo } from '../todo.service';
@@ -28,24 +28,27 @@ export class TodoList implements OnInit {
     private tagService: TagService,
     private auth: Auth,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
     this.auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.userId = user.uid;
-        this.todoService.getTodos(this.userId).subscribe((todos) => {
-          // 依優先度排序（高>中>低）
-          this.todos = todos.sort(
-            (a, b) =>
-              this.priorityValue(b.priority) - this.priorityValue(a.priority)
-          );
-        });
-        this.tagService.getTags(this.userId).subscribe((tags) => {
-          this.tags = tags;
-        });
-      }
+      this.ngZone.run(() => {
+        if (user) {
+          this.userId = user.uid;
+          this.todoService.getTodos(this.userId).subscribe((todos) => {
+            // 依優先度排序（高>中>低）
+            this.todos = todos.sort(
+              (a, b) =>
+                this.priorityValue(b.priority) - this.priorityValue(a.priority)
+            );
+          });
+          this.tagService.getTags(this.userId).subscribe((tags) => {
+            this.tags = tags;
+          });
+        }
+      });
     });
   }
 
@@ -75,10 +78,48 @@ export class TodoList implements OnInit {
 
   editTodo(todo: Todo) {
     this.editingTodo = { ...todo };
+    // 等待 DOM 更新後滾動到表單
+    setTimeout(() => {
+      this.scrollToForm();
+    }, 100);
+  }
+
+  addNewTodo() {
+    this.editingTodo = {
+      title: '',
+      content: '',
+      tagIds: [],
+      priority: '中',
+      isDone: false,
+      userId: this.userId,
+    };
+    // 等待 DOM 更新後滾動到表單
+    setTimeout(() => {
+      this.scrollToForm();
+    }, 100);
   }
 
   onEditSaved() {
     this.editingTodo = null;
+  }
+
+  onEditCancelled() {
+    this.editingTodo = null;
+  }
+
+  private scrollToForm() {
+    const formElement = document.getElementById('todo-form-section');
+    if (formElement) {
+      formElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      });
+      // 額外向下滾動一些距離
+      setTimeout(() => {
+        window.scrollBy(0, 100);
+      }, 300);
+    }
   }
 
   logout() {

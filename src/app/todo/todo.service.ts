@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -22,11 +22,17 @@ export interface Todo {
   priority: '高' | '中' | '低';
   isDone: boolean;
   userId: string;
+  audioUrl?: string; // 音檔的 URL
+  audioBlob?: Blob; // 音檔的二進位資料
 }
 
 @Injectable({ providedIn: 'root' })
 export class TodoService {
-  constructor(private firestore: Firestore, private auth: Auth) {}
+  constructor(
+    private firestore: Firestore,
+    private auth: Auth,
+    private ngZone: NgZone
+  ) {}
 
   getTodos(userId: string): Observable<Todo[]> {
     const todosRef = collection(this.firestore, 'todos');
@@ -36,7 +42,11 @@ export class TodoService {
       where('isDone', '==', false),
       orderBy('priority', 'asc')
     );
-    return collectionData(q, { idField: 'id' }) as Observable<Todo[]>;
+
+    // 確保在注入上下文中執行 Firebase API
+    return this.ngZone.runOutsideAngular(() => {
+      return collectionData(q, { idField: 'id' }) as Observable<Todo[]>;
+    });
   }
 
   addTodo(todo: Todo) {

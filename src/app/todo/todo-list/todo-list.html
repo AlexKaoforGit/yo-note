@@ -5,19 +5,7 @@
       <span class="material-icons">logout</span> 登出
     </button>
   </div>
-  <button
-    class="add-btn"
-    (click)="
-      editTodo({
-        title: '',
-        content: '',
-        tagIds: [],
-        priority: '中',
-        isDone: false,
-        userId: userId
-      })
-    "
-  >
+  <button class="add-btn" (click)="addNewTodo()">
     <span class="material-icons">add</span> 新增記事
   </button>
   <ul class="todo-list">
@@ -57,9 +45,11 @@
     </li>
   </ul>
   <app-todo-form
+    id="todo-form-section"
     *ngIf="editingTodo"
     [todo]="editingTodo"
     (saved)="onEditSaved()"
+    (cancelled)="onEditCancelled()"
   ></app-todo-form>
   <ng-container *ngIf="openedTodoId">
     <div class="todo-detail-modal">
@@ -67,6 +57,15 @@
       <div class="todo-detail-content">
         <div class="detail-content-title">內容</div>
         <div class="detail-content-body">{{ openedTodo?.content || "無" }}</div>
+
+        <!-- 音檔播放器 -->
+        <div class="audio-section" *ngIf="openedTodo?.audioUrl">
+          <div class="detail-content-title">語音記事</div>
+          <audio controls [src]="openedTodo?.audioUrl" class="todo-audio">
+            您的瀏覽器不支援音檔播放
+          </audio>
+        </div>
+
         <div class="close-button-container">
           <button class="close-detail" (click)="openedTodoId = null">
             關閉

@@ -272,5 +272,15 @@ button:hover {
 .close-button-container {
   display: flex;
   justify-content: flex-end;
-  margin-top: auto;
+  margin-top: 20px;
+}
+
+/* 表單區域樣式 */
+#todo-form-section {
+  margin-top: 2rem;
+}
+
+/* 滾動行為優化 */
+html {
+  scroll-behavior: smooth;
 }
