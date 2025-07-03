@@ -167,7 +167,7 @@ export class TodoForm implements OnInit {
   }
 
   private async uploadAudioToFirebase() {
-    const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+    const audioBlob = new Blob(this.audioChunks, { type: 'audio/mp4' });
     console.log('音檔 Blob:', audioBlob, '大小:', audioBlob.size); // 新增日誌
 
     const storageRef = ref(this.storage, `audio/${Date.now()}.webm`);
@@ -213,7 +213,7 @@ export class TodoForm implements OnInit {
             tagIds: this.tagId ? [this.tagId] : [],
             priority: this.priority,
           };
-          
+
           // 只有當 audioUrl 有值時才包含
           if (this.audioUrl) {
             updateData.audioUrl = this.audioUrl;
@@ -232,13 +232,15 @@ export class TodoForm implements OnInit {
             isDone: false,
             userId: user.uid,
           };
-          
+
           // 只有當 audioUrl 有值時才包含
           if (this.audioUrl) {
             newTodo.audioUrl = this.audioUrl;
           }
 
-          this.todoService.addTodo(newTodo as Todo).then(() => this.saved.emit());
+          this.todoService
+            .addTodo(newTodo as Todo)
+            .then(() => this.saved.emit());
         }
       });
     });
