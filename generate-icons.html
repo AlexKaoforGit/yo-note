@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>圖標生成器</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      canvas {
+        border: 1px solid #ddd;
+        margin: 10px;
+      }
+      .icon-container {
+        display: inline-block;
+        margin: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YoNote 記事本圖標生成器</h1>
+    <button onclick="generateIcons()">生成圖標</button>
+    <button onclick="downloadAll()">下載所有圖標</button>
+
+    <div id="icons-container"></div>
+
+    <script>
+      const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+      const canvases = {};
+
+      function generateIcons() {
+        const container = document.getElementById("icons-container");
+        container.innerHTML = "";
+
+        sizes.forEach((size) => {
+          const iconDiv = document.createElement("div");
+          iconDiv.className = "icon-container";
+
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          canvas.id = `icon-${size}x${size}`;
+          canvases[size] = canvas;
+
+          const ctx = canvas.getContext("2d");
+
+          // 繪製記事本圖標
+          drawNotepadIcon(ctx, size);
+
+          iconDiv.appendChild(canvas);
+          iconDiv.appendChild(document.createElement("br"));
+          iconDiv.appendChild(document.createTextNode(`${size}x${size}`));
+
+          container.appendChild(iconDiv);
+        });
+      }
+
+      function drawNotepadIcon(ctx, size) {
+        const padding = size * 0.1;
+        const noteWidth = size - padding * 2;
+        const noteHeight = size - padding * 2;
+
+        // 清除畫布
+        ctx.clearRect(0, 0, size, size);
+
+        // 背景圓形
+        ctx.fillStyle = "#2196F3";
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // 記事本背景
+        const noteX = padding + noteWidth * 0.15;
+        const noteY = padding + noteHeight * 0.1;
+        const noteW = noteWidth * 0.7;
+        const noteH = noteHeight * 0.8;
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(noteX, noteY, noteW, noteH);
+
+        // 記事本邊框
+        ctx.strokeStyle = "#E0E0E0";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(noteX, noteY, noteW, noteH);
+
+        // 左側裝訂孔
+        ctx.fillStyle = "#2196F3";
+        const holeCount = 3;
+        const holeSpacing = noteH / (holeCount + 1);
+        for (let i = 1; i <= holeCount; i++) {
+          ctx.beginPath();
+          ctx.arc(
+            noteX + noteW * 0.15,
+            noteY + holeSpacing * i,
+            size * 0.02,
+            0,
+            2 * Math.PI
+          );
+          ctx.fill();
+        }
+
+        // 文字線條
+        ctx.strokeStyle = "#E8E8E8";
+        ctx.lineWidth = Math.max(1, size * 0.005);
+        const lineCount = Math.floor(noteH / (size * 0.08));
+        const lineStartX = noteX + noteW * 0.25;
+        const lineEndX = noteX + noteW * 0.9;
+
+        for (let i = 1; i < lineCount; i++) {
+          const y = noteY + (noteH / lineCount) * i;
+          ctx.beginPath();
+          ctx.moveTo(lineStartX, y);
+          ctx.lineTo(lineEndX, y);
+          ctx.stroke();
+        }
+
+        // 標題文字區塊
+        ctx.fillStyle = "#4CAF50";
+        ctx.fillRect(
+          lineStartX,
+          noteY + noteH * 0.15,
+          noteW * 0.5,
+          size * 0.04
+        );
+
+        // 語音圖標 (小麥克風)
+        const micX = noteX + noteW * 0.75;
+        const micY = noteY + noteH * 0.25;
+        const micSize = size * 0.06;
+
+        ctx.fillStyle = "#FF5722";
+        ctx.beginPath();
+        ctx.roundRect(
+          micX - micSize / 2,
+          micY,
+          micSize,
+          micSize * 1.5,
+          micSize / 4
+        );
+        ctx.fill();
+
+        // 麥克風底座
+        ctx.strokeStyle = "#FF5722";
+        ctx.lineWidth = Math.max(1, size * 0.008);
+        ctx.beginPath();
+        ctx.arc(micX, micY + micSize * 1.8, micSize * 0.7, 0, Math.PI);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(micX, micY + micSize * 2.5);
+        ctx.lineTo(micX, micY + micSize * 3);
+        ctx.stroke();
+      }
+
+      function downloadCanvas(canvas, filename) {
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = canvas.toDataURL();
+        link.click();
+      }
+
+      function downloadAll() {
+        sizes.forEach((size) => {
+          const canvas = canvases[size];
+          if (canvas) {
+            downloadCanvas(canvas, `icon-${size}x${size}.png`);
+          }
+        });
+      }
+
+      // Canvas roundRect polyfill
+      if (!CanvasRenderingContext2D.prototype.roundRect) {
+        CanvasRenderingContext2D.prototype.roundRect = function (
+          x,
+          y,
+          width,
+          height,
+          radius
+        ) {
+          this.beginPath();
+          this.moveTo(x + radius, y);
+          this.lineTo(x + width - radius, y);
+          this.quadraticCurveTo(x + width, y, x + width, y + radius);
+          this.lineTo(x + width, y + height - radius);
+          this.quadraticCurveTo(
+            x + width,
+            y + height,
+            x + width - radius,
+            y + height
+          );
+          this.lineTo(x + radius, y + height);
+          this.quadraticCurveTo(x, y + height, x, y + height - radius);
+          this.lineTo(x, y + radius);
+          this.quadraticCurveTo(x, y, x + radius, y);
+          this.closePath();
+        };
+      }
+    </script>
+  </body>
+</html>

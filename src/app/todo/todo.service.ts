@@ -22,7 +22,7 @@ export interface Todo {
   priority: '高' | '中' | '低';
   isDone: boolean;
   userId: string;
-  audioUrl?: string; // 音檔的 URL
+  audioUrl?: string | null; // 修改為允許 null
   audioBlob?: Blob; // 音檔的二進位資料
 }
 

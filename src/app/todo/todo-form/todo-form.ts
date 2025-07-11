@@ -16,6 +16,7 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
 } from '@angular/fire/storage';
 import { inject, NgZone } from '@angular/core';
 
@@ -170,7 +171,9 @@ export class TodoForm implements OnInit {
     const audioBlob = new Blob(this.audioChunks, { type: 'audio/mp4' });
     console.log('音檔 Blob:', audioBlob, '大小:', audioBlob.size); // 新增日誌
 
-    const storageRef = ref(this.storage, `audio/${Date.now()}.webm`);
+    // 使用用戶 ID 和時間戳記創建檔案路徑
+    const fileName = `${this.userId}_${Date.now()}.webm`;
+    const storageRef = ref(this.storage, `audio/${fileName}`);
     console.log('Storage 路徑:', storageRef); // 新增日誌
 
     try {
@@ -191,12 +194,47 @@ export class TodoForm implements OnInit {
     }
   }
 
-  deleteAudio() {
-    if (this.audioUrl) {
-      URL.revokeObjectURL(this.audioUrl); // 確保 URL 被釋放
+  async deleteAudio() {
+    if (!this.audioUrl) return;
+
+    try {
+      // 如果是 Firebase Storage 的 URL，從 Storage 中刪除檔案
+      if (this.audioUrl.includes('firebase')) {
+        // 從完整的 URL 中提取檔案路徑
+        const url = new URL(this.audioUrl);
+        const pathMatch = url.pathname.match(/\/o\/(.+)\?/);
+        if (pathMatch) {
+          const filePath = decodeURIComponent(pathMatch[1]);
+          const storageRef = ref(this.storage, filePath);
+          await deleteObject(storageRef);
+          console.log('Storage 中的音檔已刪除');
+        }
+      }
+
+      // 如果是編輯模式且有 todo.id，同時更新 Firestore
+      if (this.todo?.id) {
+        await this.todoService.updateTodo(this.todo.id, { audioUrl: null });
+        console.log('Firestore 中的 audioUrl 已清除');
+      }
+
+      // 清除本地 audioUrl
+      if (this.audioUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(this.audioUrl);
+      }
       this.audioUrl = null;
+      this.audioChunks = [];
+
+      console.log('錄音已刪除');
+    } catch (error) {
+      console.error('刪除錄音失敗:', error);
+      // 即使 Storage 刪除失敗，仍然清除本地引用
+      if (this.audioUrl && this.audioUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(this.audioUrl);
+      }
+      this.audioUrl = null;
+      this.audioChunks = [];
+      alert('刪除錄音時發生錯誤，但本地引用已清除');
     }
-    this.audioChunks = [];
   }
 
   save() {
@@ -206,24 +244,20 @@ export class TodoForm implements OnInit {
       this.auth.onAuthStateChanged((user) => {
         if (!user) return;
         if (this.todo && this.todo.id) {
-          // 準備更新資料，只包含有值的欄位
+          // 準備更新資料
           const updateData: Partial<Todo> = {
             title: this.title,
             content: this.content,
             tagIds: this.tagId ? [this.tagId] : [],
             priority: this.priority,
+            audioUrl: this.audioUrl || null, // 明確設定為 null 以清除欄位
           };
-
-          // 只有當 audioUrl 有值時才包含
-          if (this.audioUrl) {
-            updateData.audioUrl = this.audioUrl;
-          }
 
           this.todoService
             .updateTodo(this.todo.id, updateData)
             .then(() => this.saved.emit());
         } else {
-          // 準備新增資料，只包含有值的欄位
+          // 準備新增資料
           const newTodo: Partial<Todo> = {
             title: this.title,
             content: this.content,
@@ -231,12 +265,8 @@ export class TodoForm implements OnInit {
             priority: this.priority,
             isDone: false,
             userId: user.uid,
+            audioUrl: this.audioUrl || null, // 明確設定為 null
           };
-
-          // 只有當 audioUrl 有值時才包含
-          if (this.audioUrl) {
-            newTodo.audioUrl = this.audioUrl;
-          }
 
           this.todoService
             .addTodo(newTodo as Todo)
